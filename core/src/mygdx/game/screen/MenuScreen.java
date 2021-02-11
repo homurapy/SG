@@ -7,75 +7,64 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 import mygdx.game.base.BaseScreen;
+import mygdx.game.math.Rect;
+import mygdx.game.sprite.Background;
+import mygdx.game.sprite.Logo;
 
 public class MenuScreen extends BaseScreen {
 
-    private Texture img;
-    private Texture img1;
+    private Background background;
+    private Texture bg;
+    private Texture logotype;
+    private Logo log;
     private Vector2 touch;
-    private Vector2 start;
-    private Vector2 v;
+
 
     @Override
     public void show() {
         super.show();
-        img1 =new Texture("backFon.jpg");
-        img = new Texture("badlogic.jpg");
-        start=new Vector2(0,0);
+        bg = new Texture("backFon.jpg");
+        logotype = new Texture("badlogic.jpg");
+        background = new Background(bg);
+        log = new Logo(logotype);
         touch = new Vector2();
+
     }
 
     @Override
     public void render(float delta) {
-//        Gdx.gl.glClearColor(0.3f, 0.6f, 0.4f, 1);
-//        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        if (touch != null) {
-            float line = (1/touch.cpy().sub(start).len());
-           v=touch.cpy().sub(start).scl(line);
-        }
+        System.out.println(touch);
         batch.begin();
-        batch.draw(img1,0,0, Gdx.graphics.getWidth(), Gdx.graphics.getWidth());
+        background.draw(batch);
+        log.draw(batch);
         batch.end();
 
-        batch.begin();
-        batch.draw(img, start.x, start.y);
-        batch.end();
-if (touch.cpy().sub(start).len()>1){
-            start.add(v);
+        if (touch.x != 0) {
+            log.move(touch);
         }
-
 
     }
 
     @Override
     public void dispose() {
-        img.dispose();
+        logotype.dispose();
+        bg.dispose();
         super.dispose();
     }
 
     @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        touch.set(screenX, Gdx.graphics.getHeight() - screenY);
-        System.out.println("touchDown screenX = " +screenX +" screenY "+ (Gdx.graphics.getHeight() - screenY));
-        return false;
+    public void resize(Rect worldBounds) {
+        background.resize(worldBounds);
+        log.resize(worldBounds);
     }
 
     @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.UP:
-                touch.y += 10;
-                break;
-            case Input.Keys.DOWN:
-                touch.y -= 10;
-                break;
-            case Input.Keys.RIGHT:
-                touch.x += 10;
-                break;
-            case Input.Keys.LEFT:
-                touch.x -= 10;
-                break;
-        }
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        System.out.println("touchUp screenX = " + screenX + " screenY = " + screenY);
+        touch.set(screenX, Gdx.graphics.getHeight() - screenY).mul(getScreenToWorld());
+        touchUp(touch, pointer, button);
         return false;
     }
 }
+
+
