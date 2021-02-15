@@ -4,11 +4,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 
 import mygdx.game.base.BaseScreen;
 import mygdx.game.math.Rect;
 import mygdx.game.sprite.Background;
+import mygdx.game.sprite.Ship;
 import mygdx.game.sprite.Star;
 
 
@@ -17,23 +19,28 @@ public class GameScreen extends BaseScreen {
     private Background background;
     private Texture bg;
 
+    private TextureAtlas atlasShip;
     private TextureAtlas atlas;
     private Star star;
-    private static final int EMPTYSTAR =256;
+    private static final int EMPTY =64;
     private Star[] stars;
     private Vector2 touch;
-
+    private Ship ship;
+    private TextureRegion region;
 
     @Override
     public void show() {
         super.show();
         bg = new Texture("textures/backFon.jpg");
-        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
+        atlas = new TextureAtlas(Gdx.files.internal("textures/menuAtlas.tpack"));
+        region =  new TextureRegion(new Texture("textures/mainAtlas.png") , 916, 95, 195, 287);
+        atlasShip = new TextureAtlas(Gdx.files.internal("textures/mainAtlas.tpack"));
         background = new Background(bg);
-        stars = new Star[EMPTYSTAR];
-        for (int i = 0; i < EMPTYSTAR; i++) {
+        stars = new Star[EMPTY];
+        for (int i = 0; i < EMPTY; i++) {
             stars[i] = new Star(atlas);
         }
+        ship =new Ship(region);
     }
 
     @Override
@@ -54,6 +61,7 @@ public class GameScreen extends BaseScreen {
         for (Star starR : stars) {
             starR.resize(worldBounds);
         }
+        ship.resize(worldBounds);
 
     }
 
@@ -61,6 +69,12 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.update(delta);
         }
+        ship.update(delta);
+            }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return super.mouseMoved(screenX, screenY);
     }
 
     private void draw() {
@@ -71,9 +85,20 @@ public class GameScreen extends BaseScreen {
         for (Star star : stars) {
             star.draw(batch);
         }
-//        buttonExit.draw(batch);
-//        buttonPlay.draw(batch);
+        ship.draw(batch);
+
         batch.end();
+    }
+
+    @Override
+    public boolean touchDown(Vector2 touch, int pointer, int button) {
+        ship.touchDown(touch, pointer, button);
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(Vector2 touch, int pointer, int button) {
+        return false;
     }
 }
 
