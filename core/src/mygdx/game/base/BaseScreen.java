@@ -17,7 +17,7 @@ public class BaseScreen implements Screen, InputProcessor {
 
     private Rect screenBounds;
     private Rect glBounds;
-    private Rect worldBounds;
+    protected Rect worldBounds;
 
     private Matrix4 worldToGl;
     private Matrix3 screenToWorld;
@@ -43,7 +43,7 @@ public class BaseScreen implements Screen, InputProcessor {
     }
 
     @Override
-        public void resize(int width, int height) {
+    public void resize(int width, int height) {
         System.out.println("resize width = " + width + " height = " + height);
         screenBounds.setSize(width, height);
         screenBounds.setLeft(0);
@@ -151,5 +151,6 @@ public class BaseScreen implements Screen, InputProcessor {
     public boolean scrolled(float amountX, float amountY) {
         return false;
     }
+
 
 }

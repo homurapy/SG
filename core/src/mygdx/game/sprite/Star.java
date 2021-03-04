@@ -9,7 +9,7 @@ import mygdx.game.math.Rnd;
 
 public class Star extends Sprite {
 
-    private final Vector2 v;
+    protected final Vector2 v;
     private Rect worldBounds;
 
     public Star(TextureAtlas atlas) {
@@ -17,7 +17,17 @@ public class Star extends Sprite {
         setHeightProportion(Rnd.nextFloat(0.005f, 0.015f));
         v = new Vector2(Rnd.nextFloat(-0.005f, 0.005f), getHeight() * -10);
     }
-
+    public void checkBounds() {
+        if (getRight() < worldBounds.getLeft()) {
+            setLeft(worldBounds.getRight());
+        }
+        if (getLeft() > worldBounds.getRight()) {
+            setRight(worldBounds.getLeft());
+        }
+        if (getTop() < worldBounds.getBottom()) {
+            setBottom(worldBounds.getTop());
+        }
+    }
     @Override
     public void update(float delta) {
         pos.mulAdd(v, delta);
